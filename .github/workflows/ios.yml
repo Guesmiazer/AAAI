@@ -3,41 +3,38 @@ name: Build iOS App
 on:
   push:
     branches:
-      - main  # Exécuter lorsque vous poussez sur la branche principale
+      - main
   pull_request:
     branches:
-      - main  # Exécuter pour les pull requests sur la branche principale
+      - main
 
 jobs:
   build:
     name: Build iOS app
-    runs-on: macos-latest  # Utilise une machine macOS pour les builds iOS
-    
+    runs-on: macos-latest  # Utilisez un runner macOS
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2  # Vérifie le code de votre dépôt
-        
+
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: 'stable'  # Utiliser la version stable de Flutter
-        
+          flutter-version: 'stable'  # Version stable de Flutter
+
       - name: Install dependencies
         run: flutter pub get  # Installe les dépendances Flutter
 
       - name: Build iOS
         run: flutter build ios --release --no-codesign  # Construire l'app en mode release sans signature
 
-      - name: Export .ipa file
+      - name: Archive iOS app
         run: |
-          cd build/ios/iphoneos
-          xcodebuild -exportArchive \
-            -archivePath Runner.xcarchive \
-            -exportPath ./Runner.ipa \
-            -exportOptionsPlist exportOptions.plist  # Utilisez votre propre exportOptions.plist
+          xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner archive -archivePath build/ios/Runner.xcarchive
+          xcodebuild -exportArchive -archivePath build/ios/Runner.xcarchive -exportPath build/ios/Runner.ipa -exportOptionsPlist exportOptions.plist
 
       - name: Upload .ipa as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v2  # Upload artifact avec la version v2
         with:
           name: ios-app
-          path: build/ios/iphoneos/Runner.ipa  # Chemin vers le fichier .ipa
+          path: Runner.ipa  # Chemin vers le fichier .ipa généré
