@@ -34,8 +34,7 @@ jobs:
           xcrun -sdk iphoneos PackageApplication -v Runner.app -o $GITHUB_WORKSPACE/Runner.ipa  # Export the .ipa file
 
       - name: Upload .ipa as artifact
-        uses: actions/upload-artifact@v2  # Upload the .ipa file as an artifact
+        uses: actions/upload-artifact@v3  # Updated to the latest version v3
         with:
           name: Runner-IPA
           path: Runner.ipa  # Path to the generated .ipa file
-
