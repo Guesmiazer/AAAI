@@ -5,13 +5,20 @@ workflows:
     flutter: stable
     xcode: latest
     ios:
-      export_method: app-store  # App Store ou Ad-Hoc ou Development selon ton cas
+      export_method: app-store  # Utilise 'app-store' pour la publication sur l'App Store
     scripts:
       - name: Install dependencies
         script: |
           flutter pub get
       - name: Build iOS
         script: |
-          flutter build ios --release --no-codesign
+          flutter build ios --release --no-codesign  # Build sans signature
+      - name: Export .ipa
+        script: |
+          # Exporter l'application après le build, en utilisant les certificats et le profil de provisioning
+          xcodebuild -exportArchive \
+            -archivePath build/ios/archive/Runner.xcarchive \
+            -exportPath build/ios/ipa \
+            -exportOptionsPlist exportOptions.plist
     artifacts:
-      - build/ios/ipa/*.ipa  # Assure-toi que c'est le bon chemin pour ton .ipa
+      - build/ios/ipa/*.ipa  # Indiquer où Codemagic doit placer l'IPA généré
