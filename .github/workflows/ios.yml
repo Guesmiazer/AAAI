@@ -1,1 +1,41 @@
+name: Build and Export iOS App
+
+on:
+  push:
+    branches:
+      - main  # Trigger on pushes to the main branch
+  pull_request:
+    branches:
+      - main  # Trigger on pull requests targeting the main branch
+
+jobs:
+  build:
+    runs-on: macos-latest  # Use a macOS runner
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2  # Checkout the repository code
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2  # Install Flutter
+        with:
+          flutter-version: 'stable'  # Install the stable version of Flutter
+
+      - name: Install dependencies
+        run: flutter pub get  # Install Flutter dependencies
+
+      - name: Build iOS release
+        run: |
+          flutter build ios --release --no-codesign  # Build iOS release (no code signing)
+
+      - name: Export .ipa file
+        run: |
+          cd build/ios/iphoneos
+          xcrun -sdk iphoneos PackageApplication -v Runner.app -o $GITHUB_WORKSPACE/Runner.ipa  # Export the .ipa file
+
+      - name: Upload .ipa as artifact
+        uses: actions/upload-artifact@v2  # Upload the .ipa file as an artifact
+        with:
+          name: Runner-IPA
+          path: Runner.ipa  # Path to the generated .ipa file
 
