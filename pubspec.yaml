@@ -19,8 +19,6 @@ dependencies:
   url_launcher: ^6.3.0
   pdf: ^3.7.2
   printing: ^5.9.0
-  firebase_core: ^3.2.0
-  firebase_messaging: ^15.0.3
   shimmer: ^3.0.0  # Effet Shimmer
   syncfusion_flutter_charts: ^28.2.4+1  # Graphiques Syncfusion
   google_fonts: ^4.0.3
