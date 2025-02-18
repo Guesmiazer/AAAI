@@ -1,0 +1,19 @@
+workflows:
+  ios_release:
+    name: iOS Release Build
+    platform: ios
+    flutter: stable
+    ios:
+      export_method: app-store
+      build:
+        ios:
+          archive: true
+    scripts:
+      - name: Install dependencies
+        script: |
+          flutter pub get
+      - name: Build iOS
+        script: |
+          flutter build ios --release --no-codesign
+    artifacts:
+      - build/ios/ipa/*.ipa
