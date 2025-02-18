@@ -5,17 +5,13 @@ workflows:
     flutter: stable
     xcode: latest
     ios:
-      export_method: app-store  # Si tu veux une version App Store, sinon utilise 'ad-hoc' ou 'development'
+      export_method: app-store  # App Store ou Ad-Hoc ou Development selon ton cas
     scripts:
       - name: Install dependencies
         script: |
           flutter pub get
       - name: Build iOS
         script: |
-          flutter build ios --release --no-codesign  # Création du build en mode release sans signature
-      - name: Generate IPA
-        script: |
-          xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner archive -archivePath $PWD/build/ios/archive/Runner.xcarchive
-          xcodebuild -exportArchive -archivePath $PWD/build/ios/archive/Runner.xcarchive -exportPath $PWD/build/ios/ipa -exportOptionsPlist ios/ExportOptions.plist
+          flutter build ios --release --no-codesign
     artifacts:
-      - build/ios/ipa/*.ipa  # C'est ici que le fichier .ipa sera généré
+      - build/ios/ipa/*.ipa  # Assure-toi que c'est le bon chemin pour ton .ipa
