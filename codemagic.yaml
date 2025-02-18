@@ -14,4 +14,4 @@ workflows:
         script: |
           flutter build ios --release --no-codesign  # Build pour release sans signature
     artifacts:
-      - build/ios/ipa/*.ipa  # C'est ici que le fichier .ipa sera généré
+      - *.ipa  # C'est ici que le fichier .ipa sera généré
