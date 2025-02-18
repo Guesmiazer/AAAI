@@ -1,40 +1,43 @@
-name: Build and Export iOS App
+name: Build iOS App
 
 on:
   push:
     branches:
-      - main  # Trigger on pushes to the main branch
+      - main  # Exécuter lorsque vous poussez sur la branche principale
   pull_request:
     branches:
-      - main  # Trigger on pull requests targeting the main branch
+      - main  # Exécuter pour les pull requests sur la branche principale
 
 jobs:
   build:
-    runs-on: macos-latest  # Use a macOS runner
-
+    name: Build iOS app
+    runs-on: macos-latest  # Utilise une machine macOS pour les builds iOS
+    
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2  # Checkout the repository code
-
+        uses: actions/checkout@v2  # Vérifie le code de votre dépôt
+        
       - name: Set up Flutter
-        uses: subosito/flutter-action@v2  # Install Flutter
+        uses: subosito/flutter-action@v2
         with:
-          flutter-version: 'stable'  # Install the stable version of Flutter
-
+          flutter-version: 'stable'  # Utiliser la version stable de Flutter
+        
       - name: Install dependencies
-        run: flutter pub get  # Install Flutter dependencies
+        run: flutter pub get  # Installe les dépendances Flutter
 
-      - name: Build iOS release
-        run: |
-          flutter build ios --release --no-codesign  # Build iOS release (no code signing)
+      - name: Build iOS
+        run: flutter build ios --release --no-codesign  # Construire l'app en mode release sans signature
 
       - name: Export .ipa file
         run: |
           cd build/ios/iphoneos
-          xcrun -sdk iphoneos PackageApplication -v Runner.app -o $GITHUB_WORKSPACE/Runner.ipa  # Export the .ipa file
+          xcodebuild -exportArchive \
+            -archivePath Runner.xcarchive \
+            -exportPath ./Runner.ipa \
+            -exportOptionsPlist exportOptions.plist  # Utilisez votre propre exportOptions.plist
 
       - name: Upload .ipa as artifact
-        uses: actions/upload-artifact@v3  # Updated to the latest version v3
+        uses: actions/upload-artifact@v3
         with:
-          name: Runner-IPA
-          path: Runner.ipa  # Path to the generated .ipa file
+          name: ios-app
+          path: build/ios/iphoneos/Runner.ipa  # Chemin vers le fichier .ipa
