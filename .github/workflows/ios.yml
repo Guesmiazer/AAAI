@@ -34,7 +34,7 @@ jobs:
           xcodebuild -exportArchive -archivePath build/ios/Runner.xcarchive -exportPath build/ios/Runner.ipa -exportOptionsPlist exportOptions.plist
 
       - name: Upload .ipa as artifact
-        uses: actions/upload-artifact@v2  # Upload artifact avec la version v2
+        uses: actions/upload-artifact@v4 # Upload artifact avec la version v2
         with:
           name: ios-app
           path: Runner.ipa  # Chemin vers le fichier .ipa généré
