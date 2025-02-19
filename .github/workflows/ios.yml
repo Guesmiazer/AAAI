@@ -37,4 +37,4 @@ jobs:
         uses: actions/upload-artifact@v4 # Upload artifact avec la version v2
         with:
           name: ios-app
-          path: Runner.ipa  # Chemin vers le fichier .ipa généré
+          path: Runner.ipa 
