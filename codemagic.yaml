@@ -1,24 +1,32 @@
 workflows:
-  ios_release:
-    name: iOS Release Build
-    platform: ios
-    flutter: stable
-    xcode: latest
-    ios:
-      export_method: app-store  # Utilise 'app-store' pour la publication sur l'App Store
-    scripts:
-      - name: Install dependencies
-        script: |
-          flutter pub get
-      - name: Build iOS
-        script: |
-          flutter build ios --release --no-codesign  # Build sans signature
-      - name: Export .ipa
-        script: |
-          # Exporter l'application après le build, en utilisant les certificats et le profil de provisioning
-          xcodebuild -exportArchive \
-            -archivePath build/ios/archive/Runner.xcarchive \
-            -exportPath build/ios/ipa \
-            -exportOptionsPlist exportOptions.plist
-    artifacts:
-      - build/ios/ipa/*.ipa  # Indiquer où Codemagic doit placer l'IPA généré
+  # Workflow pour la construction et la distribution
+  release:
+    name: Release Workflow
+    max_build_duration: 60
+    environment:
+      flutter: stable
+      xcode: latest
+      cocoapods: default
+    platforms:
+      ios:
+        build:
+          # Arguments de la construction pour iOS
+          build_mode: release
+          flutter_build_args: 
+            - --flavor ios-production
+            - -t lib/main_prod.dart
+    steps:
+      # Étapes de construction
+      - checkout
+      - flutter/packages-get
+      - flutter/flutter-build:
+          ios: true
+          android: false
+          web: false
+          macos: false
+          linux: false
+          windows: false
+      - upload-artifact:
+          name: ipa
+          path: build/ios/ipa/*.ipa
+
